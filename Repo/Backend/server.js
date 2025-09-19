@@ -1,17 +1,27 @@
 const express = require("express");
 const path = require("path");
 const productosRoutes = require("./routes/productos");
-const cors = require("cors");
 
 const app = express();
-const port = 3000;
 
-app.use(express.static(path.join(__dirname,"../Front")));
+// Middleware para logging
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
 
-app.use("/api/productos",productosRoutes);
+app.use(express.static(path.join(__dirname, "../Front")));
+
+// Ruta de prueba simple
+app.get("/api/test", (req, res) => {
+    console.log("✅ Ruta /api/test funcionando");
+    res.json({ status: "ok", message: "Server is working!" });
+});
+
+// Rutas de productos
+app.use("/api/productos", productosRoutes);
 
 const PORT = 3000;
-app.listen(PORT,() => {
-	console.log(`Servidor corriendo en http://localhost:${PORT}`);
-
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
 });
