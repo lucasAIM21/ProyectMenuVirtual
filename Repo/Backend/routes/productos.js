@@ -9,7 +9,7 @@ router.get("/",(req,res) => {
 		}
 		const productos=results.map(producto => ({
 			...producto,
-			imagen: 'http://localhost:3000${producto.imagen}'
+			imagen: `http://localhost:3000${producto.imagen}`
 		}));
 	res.json(productos);
 	});
