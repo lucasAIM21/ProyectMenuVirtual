@@ -1,6 +1,6 @@
 async function CargarMenu() {
     try{
-        const response = await fetch("/routes/productos");
+        const response = await fetch("/api/productos");
         const productos = await response.json();
 
         const menu = document.getElementById("menu");
