@@ -1,17 +1,16 @@
 const express = require("express");
-const cors = require("cors");
 const path = require("path");
+const productosRoutes = require("./routes/productos");
 
 const app = express();
-app.use(cors());
+const port = 3000;
 
-app.use("/imgs", express.static(path.join(_dirname,"../uploads")));
+app.use(express.static(path.join(__dirname,"../Front")));
 
-const productosRoutes = require("./routes/productos");
-app.use("/productos",productosRoutes);
+app.use("/routes/productos",productosRoutes);
 
 const PORT = 3000;
 app.listen(PORT,() => {
-	console.log('Servidor corriendo en https://localhost:${PORT}');
+	console.log(`Servidor corriendo en http://localhost:${PORT}`);
 
 });
