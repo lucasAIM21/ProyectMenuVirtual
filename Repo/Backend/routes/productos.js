@@ -1,28 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql2");
+const db = require("../config/db");
 
-// Conexión directa - misma que funciona en test-db.js
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root", 
-    password: "Liam_7687",
-    database: "DB_Menu"
-});
-
-// Conectar a la base de datos
-db.connect((err) => {
-    if (err) {
-        console.error("❌ Error conectando a MySQL en ruta:", err);
-    } else {
-        console.log("✅ MySQL conectado en ruta productos");
-    }
-});
-
-// Ruta simple de prueba primero
-router.get("/test", (req, res) => {
-    console.log("✅ Ruta /test funcionando");
-    res.json({ message: "Test exitoso", timestamp: new Date() });
+router.get("/", async (req, res) => {
+	try{
+		console.log("Consultando productos");
+		
+		const [results]= await db.execute(`
+			SELECT
+		                p.ProductoID as id,
+            			p.nombre,
+          			p.Precio as precio,
+            		p.Ingredientes as descripcion,
+            		i.RutaImagen as imagen
+        		FROM Productos p
+        		LEFT JOIN Imagenes i ON p.ProductoID = i.ProductoID
+		`);
+		console.log("Productos encontrados: ",results.length);
+		res.json(results);
+	}catch (err){
+		console.error("Error en consulta: ",err);
+		res.status(500).json({
+			error:"Error en base de datos",
+			details : err.message
+		});
+	}
 });
 
 // Ruta principal de productos
