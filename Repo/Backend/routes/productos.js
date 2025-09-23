@@ -1,35 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/db");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-router.get("/", async (req, res) => {
-	try{
-		console.log("Consultando productos");
-		
-		const [results]= await db.execute(`
-			SELECT
-		                p.ProductoID as id,
-            			p.nombre,
-          			p.Precio as precio,
-            		p.Ingredientes as descripcion,
-            		i.RutaImagen as imagen
-        		FROM Productos p
-        		LEFT JOIN Imagenes i ON p.ProductoID = i.ProductoID
-		`);
-		console.log("Productos encontrados: ",results.length);
-		res.json(results);
-	}catch (err){
-		console.error("Error en consulta: ",err);
-		res.status(500).json({
-			error:"Error en base de datos",
-			details : err.message
-		});
-	}
-=======
-=======
->>>>>>> 4a84bce88c27743b40e79d967b54b3f0c095c814
 const db = mysql.createConnection({
     host: "localhost",
     user: "root", 
