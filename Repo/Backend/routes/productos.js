@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../config/db");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 router.get("/", async (req, res) => {
 	try{
 		console.log("Consultando productos");
@@ -27,6 +28,8 @@ router.get("/", async (req, res) => {
 		});
 	}
 =======
+=======
+>>>>>>> 4a84bce88c27743b40e79d967b54b3f0c095c814
 const db = mysql.createConnection({
     host: "localhost",
     user: "root", 
