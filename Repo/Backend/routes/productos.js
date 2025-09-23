@@ -16,12 +16,6 @@ db.connect((err) => {
     }
 });
 
-router.get("/test", (req, res) => {
-    console.log("✅ Ruta /test funcionando");
-    res.json({ message: "Test exitoso", timestamp: new Date() });
->>>>>>> 4a84bce88c27743b40e79d967b54b3f0c095c814
-});
-
 router.get("/", (req, res) => {
     console.log("📍 Petición GET /api/productos recibida");
     
