@@ -27,7 +27,7 @@ router.get("/", (req, res) => {
             p.nombre,
             p.Precio as precio,
             p.Ingredientes as descripcion,
-            i.RutaImagen as imagen
+            i.RutaImagen as imagen,
             c.CategoriaID AS categoriaId,
             c.nombre AS categoriaNombre,
             ic.RutaImagen AS categoriaImagen
