@@ -85,7 +85,7 @@ router.put("/:id", (req, res) => {
         }
         // Si hay imagen, actualizar o insertar en tabla Imagenes
         if (imagen) {
-            const queryImg = "INSERT INTO Imagenes (ProductoID, RutaImagen) VALUES (?, ?) ON DUPLICATE KEY UPDATE RutaImagen = VALUES(RutaImagen)";
+            const queryImg = "INSERT INTO Imagenes (ProductoID, RutaImagen) VALUES (?, ?)";
             db.query(queryImg, [id, imagen], (err2) => {
                 if (err2) {
                     console.error("❌ Error al actualizar imagen:", err2);
