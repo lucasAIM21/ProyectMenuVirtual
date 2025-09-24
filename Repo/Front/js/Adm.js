@@ -16,7 +16,7 @@ async function cargarProductos() {
                 <td>${p.nombre}</td>
                 <td>${p.precio}</td>
                 <td>${p.descripcion || ""}</td>
-                <td>${p.imagen || ""}</td>
+                <td>${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" width="100">` : ""}</td>
                 <td>
                     <button onclick="editarProducto(${p.id}, '${p.nombre}', ${p.precio}, '${p.descripcion || ""}', '${p.imagen || ""}')">Editar</button>
                     <button onclick="eliminarProducto(${p.id})">Eliminar</button>
