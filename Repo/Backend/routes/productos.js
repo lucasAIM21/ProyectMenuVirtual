@@ -45,7 +45,20 @@ router.get("/", (req, res) => {
                 details: err.message 
             });
         }
-        
+
+    const productos = results.map(p => ({
+            id: p.id,
+            nombre: p.nombre,
+            precio: p.precio,
+            descripcion: p.descripcion,
+            imagen: p.imagen,
+            categoria: p.categoriaId ? {
+                id: p.categoriaId,
+                nombre: p.categoriaNombre,
+                icono: p.categoriaImagen
+            } : null
+    }));
+    
         console.log("✅ Consulta exitosa. Enviando", results.length, "productos");
         res.json(results);
     });
