@@ -1,6 +1,28 @@
 const form = document.getElementById("form-producto");
 const cancelarBtn = document.getElementById("cancelar");
 const tablaProductos = document.getElementById("tabla-productos");
+const categoriaSelect = document.getElementById("categoria");
+
+// Cargar categorías al iniciar
+async function cargarCategorias() {
+    try {
+        const res = await fetch("/api/categorias");
+        const categorias = await res.json();
+
+        categoriaSelect.innerHTML = "";
+        categorias.forEach(c => {
+            const option = document.createElement("option");
+            option.value = c.id;
+            option.innerHTML = `
+                <img src="${c.icono}" width="20"> ${c.nombre}
+            `;
+            option.textContent = c.nombre; // fallback, algunos navegadores no muestran <img> en option
+            categoriaSelect.appendChild(option);
+        });
+    } catch (err) {
+        console.error("❌ Error cargando categorías:", err);
+    }
+}
 
 // Cargar productos al iniciar
 async function cargarProductos() {
@@ -17,6 +39,9 @@ async function cargarProductos() {
                 <td>${p.precio}</td>
                 <td>${p.descripcion || ""}</td>
                 <td>${p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}" width="100">` : ""}</td>
+                <td>
+                     ${p.categoria ? `<img src="${p.categoria.icono}" width="30"> ${p.categoria.nombre}` : ""}
+                </td>
                 <td>
                     <button onclick="editarProducto(${p.id}, '${p.nombre}', ${p.precio}, '${p.descripcion || ""}', '${p.imagen || ""}')">Editar</button>
                     <button onclick="eliminarProducto(${p.id})">Eliminar</button>
@@ -39,8 +64,9 @@ form.onsubmit = async (e) => {
     const precio = document.getElementById("precio").value;
     const descripcion = document.getElementById("descripcion").value;
     const imagen = document.getElementById("imagen").value;
+    const CategoriaId = document.getElementById("categoria").value;
 
-    const producto = { nombre, precio, descripcion, imagen };
+    const producto = { nombre, precio, descripcion, imagen, CategoriaId };
 
     try {
         let res;
@@ -78,12 +104,13 @@ form.onsubmit = async (e) => {
 };
 
 // Editar producto (rellenar formulario)
-window.editarProducto = (id, nombre, precio, descripcion, imagen) => {
+window.editarProducto = (id, nombre, precio, descripcion, image, CategoriaId) => {
     document.getElementById("producto-id").value = id;
     document.getElementById("nombre").value = nombre;
     document.getElementById("precio").value = precio;
     document.getElementById("descripcion").value = descripcion;
-    document.getElementById("imagen").value = imagen;
+    document.getElementById("imagen").value = image;
+    document.getElementById("categoria").value = CategoriaId;
     cancelarBtn.style.display = "inline";
 };
 
@@ -112,4 +139,5 @@ window.eliminarProducto = async (id) => {
 };
 
 // Inicial
+cargarCategorias();
 cargarProductos();

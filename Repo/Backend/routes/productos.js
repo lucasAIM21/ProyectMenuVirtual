@@ -28,8 +28,13 @@ router.get("/", (req, res) => {
             p.Precio as precio,
             p.Ingredientes as descripcion,
             i.RutaImagen as imagen
+            c.CategoriaID AS categoriaId,
+            c.nombre AS categoriaNombre,
+            ic.RutaImagen AS categoriaImagen
         FROM Productos p
-        LEFT JOIN Imagenes i ON p.ProductoID = i.ProductoID
+        LEFT JOIN Categoria c ON p.CategoriaID = c.CategoriaID
+        LEFT JOIN Imagenes ip ON p.ProductoID = ip.ProductoID
+        LEFT JOIN Imagenes ic ON c.ImagenID = ic.ImagenID
     `;
     
     db.query(query, (err, results) => {
@@ -49,13 +54,12 @@ router.get("/", (req, res) => {
 
 // Crear un nuevo producto
 router.post("/", (req, res) => {
-    const { nombre, precio, descripcion, imagen } = req.body;
-    const CategoriaID = 1; // Valor por defecto
+    const { nombre, precio, descripcion, imagen, CategoriaId } = req.body;
     if (!nombre || !precio) {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
     const query = "INSERT INTO Productos (nombre, Precio, Ingredientes,CategoriaID) VALUES (?, ?, ?, ?)";
-    db.query(query, [nombre, precio,descripcion,CategoriaID], (err, result) => {
+    db.query(query, [nombre, precio,descripcion,CategoriaId], (err, result) => {
         if (err) {
             console.error("❌ Error al crear producto:", err);
             return res.status(500).json({ error: "Error en base de datos", details: err.message });
