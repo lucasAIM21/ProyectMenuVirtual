@@ -33,7 +33,7 @@ router.get("/", (req, res) => {
             ic.RutaImagen AS categoriaImagen
         FROM Productos p
         LEFT JOIN Categoria c ON p.CategoriaID = c.CategoriaID
-        LEFT JOIN Imagenes ip ON p.ProductoID = ip.ProductoID
+        LEFT JOIN Imagenes i ON p.ProductoID = i.ProductoID
         LEFT JOIN Imagenes ic ON c.ImagenID = ic.ImagenID
     `;
     
