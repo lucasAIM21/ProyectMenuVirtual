@@ -58,9 +58,9 @@ router.get("/", (req, res) => {
                 icono: p.categoriaImagen
             } : null
     }));
-    
+
         console.log("✅ Consulta exitosa. Enviando", results.length, "productos");
-        res.json(results);
+        res.json(productos);
     });
 });
 
