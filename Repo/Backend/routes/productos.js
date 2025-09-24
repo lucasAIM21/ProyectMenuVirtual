@@ -55,7 +55,7 @@ router.post("/", (req, res) => {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
     const query = "INSERT INTO Productos (nombre, Precio, Ingredientes,CategoriaID) VALUES (?, ?, ?, ?)";
-    db.query(query, [nombre, precio,descripcion,CategoriaID || null], (err, result) => {
+    db.query(query, [nombre, precio,descripcion,CategoriaID], (err, result) => {
         if (err) {
             console.error("❌ Error al crear producto:", err);
             return res.status(500).json({ error: "Error en base de datos", details: err.message });
