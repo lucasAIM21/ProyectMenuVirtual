@@ -49,12 +49,13 @@ router.get("/", (req, res) => {
 
 // Crear un nuevo producto
 router.post("/", (req, res) => {
-    const { nombre, precio, descripcion, CategoriaID, imagen } = req.body;
+    const { nombre, precio, descripcion, imagen } = req.body;
+    const CategoriaID = 1; // Valor por defecto
     if (!nombre || !precio) {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
     const query = "INSERT INTO Productos (nombre, Precio, Ingredientes,CategoriaID) VALUES (?, ?, ?, ?)";
-    db.query(query, [nombre, precio, descripcion,CategoriaID || null], (err, result) => {
+    db.query(query, [nombre, precio,descripcion,CategoriaID || null], (err, result) => {
         if (err) {
             console.error("❌ Error al crear producto:", err);
             return res.status(500).json({ error: "Error en base de datos", details: err.message });
