@@ -12,14 +12,14 @@ async function cargarProductos() {
         productos.forEach(p => {
             const fila = document.createElement("tr");
             fila.innerHTML = `
-                <td>${p.ProductoID}</td>
+                <td>${p.id}</td>
                 <td>${p.nombre}</td>
-                <td>${p.Precio}</td>
-                <td>${p.Ingredientes || ""}</td>
-                <td>${p.RutaImagen || ""}</td>
+                <td>${p.precio}</td>
+                <td>${p.descripcion || ""}</td>
+                <td>${p.imagen || ""}</td>
                 <td>
-                    <button onclick="editarProducto(${p.ProductoID}, '${p.nombre}', ${p.Precio}, '${p.Ingredientes || ""}', '${p.RutaImagen || ""}')">Editar</button>
-                    <button onclick="eliminarProducto(${p.ProductoID})">Eliminar</button>
+                    <button onclick="editarProducto(${p.id}, '${p.nombre}', ${p.precio}, '${p.descripcion || ""}', '${p.imagen || ""}')">Editar</button>
+                    <button onclick="eliminarProducto(${p.id})">Eliminar</button>
                 </td>
             `;
             tablaProductos.appendChild(fila);
@@ -28,6 +28,7 @@ async function cargarProductos() {
         console.error("❌ Error cargando productos:", err);
     }
 }
+
 
 // Guardar (crear o editar)
 form.onsubmit = async (e) => {
