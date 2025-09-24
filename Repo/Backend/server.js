@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const productosRoutes = require("./routes/productos");
+const categoriasRoutes = require("./routes/categorias");
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.get("/api/test", (req, res) => {
 
 // Rutas de productos
 app.use("/api/productos", productosRoutes);
+
+app.use("/api/categorias", categoriasRoutes);
 
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
