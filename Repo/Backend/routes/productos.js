@@ -13,7 +13,18 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage });
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        const allowed = /jpeg|jpg|png|webp/;
+        const ext = path.extname(file.originalname).toLowerCase();
+        if (allowed.test(ext)) {
+            cb(null, true);
+        } else {
+            cb(new Error("Solo se permiten imágenes (jpeg, jpg, png, webp)"));
+        }
+    }
+});
 
 // ==================== GET PRODUCTOS ====================
 router.get("/", async (req, res) => {

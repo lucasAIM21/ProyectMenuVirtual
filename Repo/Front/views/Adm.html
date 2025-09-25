@@ -13,9 +13,9 @@
         <input type="text" id="nombre" placeholder="Nombre" required>
         <input type="number" id="precio" placeholder="Precio" required>
         <input type="text" id="descripcion" placeholder="Descripción">
-        <input type="file" id="imagen" accept="image/*" required>
+        <input type="file" id="imagen" name="imagen" accept="image/*" required>
         <label for="categoria">Categoría:</label>
-        <select id="categoria" required></select>
+        <select id="categoria" name="CategoriaId" required></select>
         <img id="categoria-preview" alt="Preview categoría" width="40" style="vertical-align:middle; margin-left:8px; display:none;">
         <button type="submit">Guardar</button>
         <button type="button" id="cancelar" style="display:none;">Cancelar</button>
