@@ -1,23 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql2");
 const multer = require("multer");
 const path = require("path");
 const db = require("../config/db");
 
+// 📂 Configuración de multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../../imgs/imgP")); // carpeta donde guardar
+        cb(null, path.join(__dirname, "../../imgs/imgP"));
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // nombre único
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 const upload = multer({ storage });
 
-router.get("/", (req, res) => {
+// ==================== GET PRODUCTOS ====================
+router.get("/", async (req, res) => {
     console.log("📍 Petición GET /api/productos recibida");
-    
+
     const query = `
         SELECT 
             p.ProductoId as id,
@@ -33,17 +34,11 @@ router.get("/", (req, res) => {
         LEFT JOIN ImgProductos i ON p.ProductoId = i.ProductoId
         LEFT JOIN ImgCategorias ic ON c.ImgId = ic.ImgId
     `;
-    
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error("❌ Error en consulta SQL:", err);
-            return res.status(500).json({ 
-                error: "Error en base de datos",
-                details: err.message 
-            });
-        }
 
-    const productos = results.map(p => ({
+    try {
+        const [results] = await db.query(query);
+
+        const productos = results.map(p => ({
             id: p.id,
             nombre: p.nombre,
             precio: p.precio,
@@ -54,64 +49,87 @@ router.get("/", (req, res) => {
                 nombre: p.categoriaNombre,
                 icono: p.categoriaImagen
             } : null
-    }));
+        }));
 
-        console.log("✅ Consulta exitosa. Enviando", results.length, "productos");
+        console.log("✅ Consulta exitosa. Enviando", productos.length, "productos");
         res.json(productos);
-    });
+    } catch (err) {
+        console.error("❌ Error en la consulta:", err);
+        res.status(500).json({ error: "Error en la consulta" });
+    }
 });
 
-
-// Crear un nuevo producto
-router.post("/", upload.single("imagen"), (req, res) => {
-    const { nombre, precio, descripcion, imagen, CategoriaId } = req.body;
-    const rutaImagen = "/imgs/imgP/" + req.file.filename;
+// ==================== POST PRODUCTO ====================
+router.post("/", upload.single("imagen"), async (req, res) => {
+    const { nombre, precio, descripcion, CategoriaId } = req.body;
 
     if (!nombre || !precio) {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
-    const query = "INSERT INTO Productos (nombre, Precio, Ingredientes,CategoriaId) VALUES (?, ?, ?, ?)";
-    db.query(query, [nombre, precio,descripcion,CategoriaId], (err, result) => {
-        if (err) {
-            console.error("❌ Error al crear producto:", err);
-            return res.status(500).json({ error: "Error en base de datos", details: err.message });
-        }
-        // Si hay imagen, insertar en tabla Imagenes
 
-        if (imagen) {
-            const productoId = result.insertId;
-            const queryImg = "INSERT INTO ImgProductos (ProductoId, RutaImagen) VALUES (?, ?)";
-            db.query(queryImg, [productoId, imagen], (err2) => {
-                if (err2) {
-                    console.error("❌ Error al guardar imagen:", err2);
-                }
-            });
+    try {
+        // Insertar producto
+        const [result] = await db.query(
+            "INSERT INTO Productos (nombre, Precio, Ingredientes, CategoriaId) VALUES (?, ?, ?, ?)",
+            [nombre, precio, descripcion, CategoriaId]
+        );
+
+        // Si hay imagen, guardarla en ImgProductos
+        if (req.file) {
+            const rutaImagen = "/imgs/imgP/" + req.file.filename;
+            await db.query(
+                "INSERT INTO ImgProductos (ProductoId, RutaImagen) VALUES (?, ?)",
+                [result.insertId, rutaImagen]
+            );
         }
+
         res.status(201).json({ message: "Producto creado", id: result.insertId });
-    });
+    } catch (err) {
+        console.error("❌ Error al crear producto:", err);
+        res.status(500).json({ error: "Error en base de datos", details: err.message });
+    }
 });
 
-// Modificar un producto existente
-router.put("/:id", (req, res) => {
-    const { nombre, precio, descripcion, imagen } = req.body;
+// ==================== PUT PRODUCTO ====================
+router.put("/:id", upload.single("imagen"), async (req, res) => {
+    const { nombre, precio, descripcion } = req.body;
     const { id } = req.params;
-    const query = "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ? WHERE ProductoId = ?";
-    db.query(query, [nombre, precio, descripcion, id], (err, result) => {
-        if (err) {
-            console.error("❌ Error al modificar producto:", err);
-            return res.status(500).json({ error: "Error en base de datos", details: err.message });
+
+    try {
+        // Actualizar producto
+        await db.query(
+            "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ? WHERE ProductoId = ?",
+            [nombre, precio, descripcion, id]
+        );
+
+        // Si hay nueva imagen, actualizar o insertar
+        if (req.file) {
+            const rutaImagen = "/imgs/imgP/" + req.file.filename;
+
+            // Checar si ya existe imagen para este producto
+            const [rows] = await db.query(
+                "SELECT ImgId FROM ImgProductos WHERE ProductoId = ?",
+                [id]
+            );
+
+            if (rows.length > 0) {
+                await db.query(
+                    "UPDATE ImgProductos SET RutaImagen = ? WHERE ProductoId = ?",
+                    [rutaImagen, id]
+                );
+            } else {
+                await db.query(
+                    "INSERT INTO ImgProductos (ProductoId, RutaImagen) VALUES (?, ?)",
+                    [id, rutaImagen]
+                );
+            }
         }
-        // Si hay imagen, actualizar o insertar en tabla Imagenes
-        if (imagen) {
-            const queryImg = "INSERT INTO Imagenes (ProductoId, RutaImagen) VALUES (?, ?)";
-            db.query(queryImg, [id, imagen], (err2) => {
-                if (err2) {
-                    console.error("❌ Error al actualizar imagen:", err2);
-                }
-            });
-        }
+
         res.json({ message: "Producto modificado" });
-    });
+    } catch (err) {
+        console.error("❌ Error al modificar producto:", err);
+        res.status(500).json({ error: "Error en base de datos", details: err.message });
+    }
 });
 
 module.exports = router;
