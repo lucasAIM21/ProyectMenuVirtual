@@ -80,7 +80,7 @@ router.post("/", (req, res) => {
         // Si hay imagen, insertar en tabla Imagenes
         if (imagen) {
             const productoId = result.insertId;
-            const queryImg = "INSERT INTO Imagenes (ProductoId, RutaImagen) VALUES (?, ?)";
+            const queryImg = "INSERT INTO ImagProductos (ProductoId, RutaImagen) VALUES (?, ?)";
             db.query(queryImg, [productoId, imagen], (err2) => {
                 if (err2) {
                     console.error("❌ Error al guardar imagen:", err2);

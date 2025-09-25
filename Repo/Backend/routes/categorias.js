@@ -22,11 +22,11 @@ router.get("/", (req, res) => {
     
     const query = `
         SELECT 
-            c.CategoriaID as id,
+            c.CategoriaId as id,
             c.nombre,
             i.RutaImagen as imagen
         FROM Categoria c
-        LEFT JOIN Imagenes i ON c.ImagenID = i.ImagenID
+        LEFT JOIN ImgCategorias i ON c.ImgId = i.ImgId
     `;
     
     db.query(query, (err, results) => {
