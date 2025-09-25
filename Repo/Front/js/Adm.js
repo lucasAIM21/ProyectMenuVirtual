@@ -4,6 +4,8 @@ const tablaProductos = document.getElementById("tabla-productos");
 const categoriaSelect = document.getElementById("categoria");
 const categoriaPreview = document.getElementById("categoria-preview");
 
+let productos = [];
+
 // Cargar categorías al iniciar
 async function cargarCategorias() {
     try {
@@ -43,7 +45,7 @@ categoriaSelect.addEventListener("change", actualizarPreview);
 async function cargarProductos() {
     try {
         const res = await fetch("/api/productos");
-        const productos = await res.json();
+        productos = await res.json();
 
         tablaProductos.innerHTML = "";
         productos.forEach(p => {
@@ -113,19 +115,31 @@ form.addEventListener("submit", async (e) => {
 
 // Editar producto (rellenar formulario)
 window.editarProducto = (id, nombre, precio, descripcion, image, CategoriaId) => {
+    const producto = productos.find(p => p.id === id);
+    if(!productos) return;
+
     document.getElementById("producto-id").value = id;
     document.getElementById("nombre").value = nombre;
     document.getElementById("precio").value = precio;
     document.getElementById("descripcion").value = descripcion;
     document.getElementById("categoria").value = CategoriaId;
     document.getElementById("imagen").value = "";
+
+    let preview = document.getElementById("preview");
+
+    if(!preview){
+        preview=document.createElement("img");
+        preview.id="preview";
+        preview.width =120;
+        document.getElementById("form-producto").appendChild(preview);
+    }
+
     if (producto.imagen) {
-    const preview = document.getElementById("preview");
-    preview.src = producto.imagen;   // aquí llega la ruta que guardaste en DB (/imgs/imgP/Chaufa.jpg, etc.)
-    preview.style.display = "block";
-} else {
-    document.getElementById("preview").style.display = "none";
-}
+        preview.src = producto.imagen;   // aquí llega la ruta que guardaste en DB (/imgs/imgP/Chaufa.jpg, etc.)
+        preview.style.display = "block";
+    } else {
+        preview.style.display = "none";
+    }
     cancelarBtn.style.display = "inline";
 };
 
