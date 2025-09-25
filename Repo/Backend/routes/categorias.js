@@ -3,7 +3,7 @@ const router = express.Router();
 const mysql = require("mysql2");
 const db = require("../config/db");
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
     console.log("📍 Petición GET /api/categorias recibida");
     
     const query = `
@@ -15,18 +15,13 @@ router.get("/", (req, res) => {
         LEFT JOIN ImgCategorias i ON c.ImgId = i.ImgId
     `;
     
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error("❌ Error en consulta SQL:", err);
-            return res.status(500).json({ 
-                error: "Error en base de datos",
-                details: err.message 
-            });
-        }
-        
-        console.log("✅ Consulta exitosa. Enviando", results.length, "categorias");
-        res.json(results);
-    });
+    try {
+        const [rows] = await db.query(query); // ✅ sin callback
+        res.json(rows);
+    } catch (err) {
+        console.error("❌ Error en la consulta:", err);
+        res.status(500).json({ error: "Error en la consulta" });
+    }
 });
 
 
