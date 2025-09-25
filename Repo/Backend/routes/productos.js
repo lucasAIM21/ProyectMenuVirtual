@@ -3,7 +3,7 @@ const router = express.Router();
 const mysql = require("mysql2");
 const multer = require("multer");
 const path = require("path");
-const db = require("../db");
+const db = require("../config/db");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
