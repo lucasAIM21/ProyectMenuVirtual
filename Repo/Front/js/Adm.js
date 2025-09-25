@@ -117,8 +117,15 @@ window.editarProducto = (id, nombre, precio, descripcion, image, CategoriaId) =>
     document.getElementById("nombre").value = nombre;
     document.getElementById("precio").value = precio;
     document.getElementById("descripcion").value = descripcion;
-    document.getElementById("imagen").value = image;
     document.getElementById("categoria").value = CategoriaId;
+    document.getElementById("imagen").value = "";
+    if (producto.imagen) {
+    const preview = document.getElementById("preview");
+    preview.src = producto.imagen;   // aquí llega la ruta que guardaste en DB (/imgs/imgP/Chaufa.jpg, etc.)
+    preview.style.display = "block";
+} else {
+    document.getElementById("preview").style.display = "none";
+}
     cancelarBtn.style.display = "inline";
 };
 
