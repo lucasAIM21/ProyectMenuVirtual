@@ -15,7 +15,7 @@ async function cargarCategorias() {
             const option = document.createElement("option");
             option.value = c.id;
             option.textContent = c.nombre; // fallback, algunos navegadores no muestran <img> en option
-            option.dataset.imagen = c.imagen; // guardar ruta imagen en dataset
+            option.dataset.icon = c.imagen; // guardar ruta imagen en dataset
             categoriaSelect.appendChild(option);
         });
 
