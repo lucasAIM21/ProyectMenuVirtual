@@ -11,7 +11,7 @@ CREATE TABLE ImgProductos (
 
 CREATE TABLE ImgCategorias (
     ImgId INT AUTO_INCREMENT PRIMARY KEY,
-    RutaImagen VARCHAR(255) NOT NULL,
+    RutaImagen VARCHAR(255) NOT NULL
 );
 
 -- Tabla Categoria
@@ -32,3 +32,6 @@ CREATE TABLE Productos (
     FOREIGN KEY (CategoriaId) REFERENCES Categoria(CategoriaId)
 );
 
+ALTER TABLE ImgProductos
+ADD CONSTRAINT FK_ImgProductos_Productos FOREIGN KEY (ProductoId)
+REFERENCES Productos(ProductoId);
