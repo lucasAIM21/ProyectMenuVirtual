@@ -1,21 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql2");
-
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root", 
-    password: "Liam_7687",
-    database: "DB_Menu"
-});
-
-db.connect((err) => {
-    if (err) {
-        console.error("❌ Error conectando a MySQL en ruta:", err);
-    } else {
-        console.log("✅ MySQL conectado en ruta categorias");
-    }
-});
+const db = require("../db");
 
 router.get("/", (req, res) => {
     console.log("📍 Petición GET /api/categorias recibida");

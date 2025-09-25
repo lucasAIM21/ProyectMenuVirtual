@@ -71,17 +71,12 @@ async function cargarProductos() {
 
 
 // Guardar (crear o editar)
-form.onsubmit = async (e) => {
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const id = document.getElementById("producto-id").value;
-    const nombre = document.getElementById("nombre").value;
-    const precio = document.getElementById("precio").value;
-    const descripcion = document.getElementById("descripcion").value;
-    const imagen = document.getElementById("imagen").value;
-    const CategoriaId = document.getElementById("categoria").value;
 
-    const producto = { nombre, precio, descripcion, imagen, CategoriaId };
+    const formData = new FormData(form); // incluye imagen + datos
 
     try {
         let res;
@@ -89,15 +84,13 @@ form.onsubmit = async (e) => {
             // Editar producto
             res = await fetch(`/api/productos/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(producto)
+                body: formData
             });
         } else {
             // Crear producto
             res = await fetch("/api/productos", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(producto)
+                body: formData
             });
         }
 
@@ -116,7 +109,7 @@ form.onsubmit = async (e) => {
     } catch (err) {
         console.error("❌ Error en fetch:", err);
     }
-};
+});
 
 // Editar producto (rellenar formulario)
 window.editarProducto = (id, nombre, precio, descripcion, image, CategoriaId) => {

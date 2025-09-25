@@ -1,22 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql2");
+const multer = require("multer");
+const path = require("path");
+const db = require("../db");
 
-
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root", 
-    password: "Liam_7687",
-    database: "DB_Menu"
-});
-
-db.connect((err) => {
-    if (err) {
-        console.error("❌ Error conectando a MySQL en ruta:", err);
-    } else {
-        console.log("✅ MySQL conectado en ruta productos");
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, "../../imgs/imgP")); // carpeta donde guardar
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // nombre único
     }
 });
+const upload = multer({ storage });
 
 router.get("/", (req, res) => {
     console.log("📍 Petición GET /api/productos recibida");
@@ -66,8 +63,10 @@ router.get("/", (req, res) => {
 
 
 // Crear un nuevo producto
-router.post("/", (req, res) => {
+router.post("/", upload.single("imagen"), (req, res) => {
     const { nombre, precio, descripcion, imagen, CategoriaId } = req.body;
+    const rutaImagen = "/imgs/imgP/" + req.file.filename;
+
     if (!nombre || !precio) {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
@@ -78,9 +77,10 @@ router.post("/", (req, res) => {
             return res.status(500).json({ error: "Error en base de datos", details: err.message });
         }
         // Si hay imagen, insertar en tabla Imagenes
+
         if (imagen) {
             const productoId = result.insertId;
-            const queryImg = "INSERT INTO ImagProductos (ProductoId, RutaImagen) VALUES (?, ?)";
+            const queryImg = "INSERT INTO ImgProductos (ProductoId, RutaImagen) VALUES (?, ?)";
             db.query(queryImg, [productoId, imagen], (err2) => {
                 if (err2) {
                     console.error("❌ Error al guardar imagen:", err2);
