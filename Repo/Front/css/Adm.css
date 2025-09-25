@@ -24,16 +24,35 @@ form {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
+    align-items: center;
 }
 
-form input {
+form input,
+form select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
     width: 100%;
+    box-sizing: border-box;
 }
 
+/* Etiquetas */
+form label {
+    grid-column: span 2;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #444;
+}
+
+/* Preview categoría */
+#categoria-preview {
+    grid-column: span 2;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Botones del formulario */
 form button {
     grid-column: span 2;
     padding: 12px;
@@ -56,7 +75,6 @@ form button[type="submit"]:hover {
 form button#cancelar {
     background: #e74c3c;
     color: white;
-    display: none;
 }
 
 form button#cancelar:hover {
@@ -88,6 +106,7 @@ tbody td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
+    vertical-align: middle;
 }
 
 tbody tr:hover {
@@ -121,4 +140,10 @@ td button.eliminar {
 
 td button.eliminar:hover {
     background: #c0392b;
+}
+
+/* ==== Imagenes en tabla ==== */
+td img {
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
