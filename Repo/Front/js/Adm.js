@@ -2,6 +2,7 @@ const form = document.getElementById("form-producto");
 const cancelarBtn = document.getElementById("cancelar");
 const tablaProductos = document.getElementById("tabla-productos");
 const categoriaSelect = document.getElementById("categoria");
+const categoriaPreview = document.getElementById("categoria-preview");
 
 // Cargar categorías al iniciar
 async function cargarCategorias() {
@@ -13,16 +14,30 @@ async function cargarCategorias() {
         categorias.forEach(c => {
             const option = document.createElement("option");
             option.value = c.id;
-            option.innerHTML = `
-                <img src="${c.icono}" width="20"> ${c.nombre}
-            `;
             option.textContent = c.nombre; // fallback, algunos navegadores no muestran <img> en option
+            option.dataset.imagen = c.imagen; // guardar ruta imagen en dataset
             categoriaSelect.appendChild(option);
         });
+
+        actualizarPreview();
     } catch (err) {
         console.error("❌ Error cargando categorías:", err);
     }
 }
+
+function actualizarPreview() {
+    const opt = categoriaSelect.selectedOptions[0];
+    if (!opt) return;
+    const icon = opt.dataset.icon;
+    if (icon) {
+        categoriaPreview.src = icon;
+        categoriaPreview.style.display = "inline-block";
+    } else {
+        categoriaPreview.style.display = "none";
+    }
+}
+
+categoriaSelect.addEventListener("change", actualizarPreview);
 
 // Cargar productos al iniciar
 async function cargarProductos() {
