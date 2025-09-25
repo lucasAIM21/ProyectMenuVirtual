@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "../Front")));
+app.use('/imgs', express.static(path.join(__dirname, '../imgs')));
 
 // Ruta de prueba simple
 app.get("/api/test", (req, res) => {
