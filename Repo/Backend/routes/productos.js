@@ -143,4 +143,27 @@ router.put("/:id", upload.single("imagen"), async (req, res) => {
     }
 });
 
+// ==================== DELETE PRODUCTO ====================
+router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Eliminar primero la imagen asociada (si existe)
+        await db.query("DELETE FROM ImgProductos WHERE ProductoId = ?", [id]);
+
+        // Luego eliminar el producto
+        const [result] = await db.query("DELETE FROM Productos WHERE ProductoId = ?", [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Producto no encontrado" });
+        }
+
+        res.json({ message: "Producto eliminado correctamente" });
+    } catch (err) {
+        console.error("❌ Error al eliminar producto:", err);
+        res.status(500).json({ error: "Error en base de datos", details: err.message });
+    }
+});
+
+
 module.exports = router;
