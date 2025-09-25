@@ -23,18 +23,18 @@ router.get("/", (req, res) => {
     
     const query = `
         SELECT 
-            p.ProductoID as id,
+            p.ProductoId as id,
             p.nombre,
             p.Precio as precio,
             p.Ingredientes as descripcion,
             i.RutaImagen as imagen,
-            c.CategoriaID AS categoriaId,
+            c.CategoriaId AS categoriaId,
             c.nombre AS categoriaNombre,
             ic.RutaImagen AS categoriaImagen
         FROM Productos p
-        LEFT JOIN Categoria c ON p.CategoriaID = c.CategoriaID
-        LEFT JOIN Imagenes i ON p.ProductoID = i.ProductoID
-        LEFT JOIN Imagenes ic ON c.ImagenID = ic.ImagenID
+        LEFT JOIN Categoria c ON p.CategoriaId = c.CategoriaId
+        LEFT JOIN ImgProductos i ON p.ProductoId = i.ProductoId
+        LEFT JOIN ImgCategorias ic ON c.ImgId = ic.ImgId
     `;
     
     db.query(query, (err, results) => {
@@ -71,7 +71,7 @@ router.post("/", (req, res) => {
     if (!nombre || !precio) {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
-    const query = "INSERT INTO Productos (nombre, Precio, Ingredientes,CategoriaID) VALUES (?, ?, ?, ?)";
+    const query = "INSERT INTO Productos (nombre, Precio, Ingredientes,CategoriaId) VALUES (?, ?, ?, ?)";
     db.query(query, [nombre, precio,descripcion,CategoriaId], (err, result) => {
         if (err) {
             console.error("❌ Error al crear producto:", err);
@@ -80,7 +80,7 @@ router.post("/", (req, res) => {
         // Si hay imagen, insertar en tabla Imagenes
         if (imagen) {
             const productoId = result.insertId;
-            const queryImg = "INSERT INTO Imagenes (ProductoID, RutaImagen) VALUES (?, ?)";
+            const queryImg = "INSERT INTO Imagenes (ProductoId, RutaImagen) VALUES (?, ?)";
             db.query(queryImg, [productoId, imagen], (err2) => {
                 if (err2) {
                     console.error("❌ Error al guardar imagen:", err2);
@@ -95,7 +95,7 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
     const { nombre, precio, descripcion, imagen } = req.body;
     const { id } = req.params;
-    const query = "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ? WHERE ProductoID = ?";
+    const query = "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ? WHERE ProductoId = ?";
     db.query(query, [nombre, precio, descripcion, id], (err, result) => {
         if (err) {
             console.error("❌ Error al modificar producto:", err);
@@ -103,7 +103,7 @@ router.put("/:id", (req, res) => {
         }
         // Si hay imagen, actualizar o insertar en tabla Imagenes
         if (imagen) {
-            const queryImg = "INSERT INTO Imagenes (ProductoID, RutaImagen) VALUES (?, ?)";
+            const queryImg = "INSERT INTO Imagenes (ProductoId, RutaImagen) VALUES (?, ?)";
             db.query(queryImg, [id, imagen], (err2) => {
                 if (err2) {
                     console.error("❌ Error al actualizar imagen:", err2);
