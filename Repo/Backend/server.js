@@ -3,7 +3,11 @@ const path = require("path");
 const productosRoutes = require("./routes/productos");
 const categoriasRoutes = require("./routes/categorias");
 
+const cors = require("cors");
+
 const app = express();
+
+app.use(cors());
 
 // Middleware para logging
 app.use((req, res, next) => {
