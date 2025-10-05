@@ -1,5 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
+const sesion = require("express-session");
 const productosRoutes = require("./routes/productos");
 const categoriasRoutes = require("./routes/categorias");
 
@@ -7,7 +9,21 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://lucasaim21.github.io/ProyectMenuVirtual2/',
+    Credentials: true
+}));
+
+app.use(sesion({
+    secret: process.env.SESSION_SECRET || "Clave",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly:true,
+        secure: false,
+        maxAge: 60 * 1000
+    }
+}));
 
 // Middleware para logging
 app.use((req, res, next) => {
