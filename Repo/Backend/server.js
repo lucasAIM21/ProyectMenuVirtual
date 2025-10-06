@@ -4,6 +4,7 @@ const path = require("path");
 const sesion = require("express-session");
 const productosRoutes = require("./routes/productos");
 const categoriasRoutes = require("./routes/categorias");
+const ValidarPINRoutes = require("./routes/ValidarPIN")
 
 const cors = require("cors");
 
@@ -45,8 +46,8 @@ app.get("/api/test", (req, res) => {
 
 // Rutas de productos
 app.use("/api/productos", productosRoutes);
-
 app.use("/api/categorias", categoriasRoutes);
+app.use("/api", ValidarPINRoutes);
 
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
