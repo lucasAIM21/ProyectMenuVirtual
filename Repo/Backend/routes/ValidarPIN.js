@@ -9,13 +9,14 @@ router.post("/ValidarPIN", (req, res) => {
         return res.status(400).json({success:false,messaje:"Falta el PIN"});
     }
     if(pin===PINC){
+        res.session.autenticado=true;
         return res.json({success:true, messaje: "PIN COrrecto"});
     } else{
         return res.status(401).json({success:false,messaje:"PIN incorrecto"});
     }
 });
 
-router.get("/ValidarSesion",(req,res)=>{
+router.get("/ValidarSesion",(req,res)=>{0
     if(req.session.autenticado){
         res.json({autenticado:true});
     }else{
