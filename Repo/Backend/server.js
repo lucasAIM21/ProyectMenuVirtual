@@ -13,14 +13,14 @@ const app = express();
 app.use(cors({
     origin: 'https://lucasaim21.github.io',
     credentials: true,
-    methods: ['GET', 'POST', 'OPTIONS'],
+    methods: ['GET', 'POST', 'OPTIONS','DELETE','PUT'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://lucasaim21.github.io");
     res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PUT");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     if (req.method === "OPTIONS") {
         return res.sendStatus(204);
