@@ -1,3 +1,4 @@
+
 const form = document.getElementById("form-producto");
 const cancelarBtn = document.getElementById("cancelar");
 const tablaProductos = document.getElementById("tabla-productos");

@@ -15,4 +15,12 @@ router.post("/ValidarPIN", (req, res) => {
     }
 });
 
+router.get("/ValidarSesion",(req,res)=>{
+    if(req.sesion.autenticado){
+        res.json({autenticado:true});
+    }else{
+        res.json({autenticado:false});
+    }
+});
+
 module.exports=router;

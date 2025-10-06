@@ -10,8 +10,8 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-    origin: 'https://lucasaim21.github.io/ProyectMenuVirtual2/',
-    Credentials: true
+    origin: 'https://lucasaim21.github.io/ProyectMenuVirtual2',
+    credentials: true
 }));
 
 app.use(sesion({
