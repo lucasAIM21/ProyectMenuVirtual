@@ -28,11 +28,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.options('*', cors({
-    origin: 'https://lucasaim21.github.io',
-    credentials: true
-}));
-
 app.use(sesion({
     secret: process.env.SESSION_SECRET || "Clave",
     resave: false,
