@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const PINC=Process.env.APP_PIN;
+const PINC=process.env.APP_PIN;
 
 router.post("/ValidarPIN", (req, res) => {
     const {pin} = req.body;
@@ -9,14 +9,14 @@ router.post("/ValidarPIN", (req, res) => {
         return res.status(400).json({success:false,messaje:"Falta el PIN"});
     }
     if(pin===PINC){
-        return res.json({sucess:true, messaje: "PIN COrrecto"});
+        return res.json({sucecss:true, messaje: "PIN COrrecto"});
     } else{
-        return res.status(401).json({sucess:false,messaje:"PIN incorrecto"});
+        return res.status(401).json({success:false,messaje:"PIN incorrecto"});
     }
 });
 
 router.get("/ValidarSesion",(req,res)=>{
-    if(req.sesion.autenticado){
+    if(req.session.autenticado){
         res.json({autenticado:true});
     }else{
         res.json({autenticado:false});
