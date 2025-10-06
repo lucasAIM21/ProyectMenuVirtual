@@ -12,6 +12,13 @@ const app = express();
 
 app.use(cors({
     origin: 'https://lucasaim21.github.io',
+    credentials: true,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors({
+    origin: 'https://lucasaim21.github.io',
     credentials: true
 }));
 
@@ -21,7 +28,8 @@ app.use(sesion({
     saveUninitialized: false,
     cookie: {
         httpOnly:true,
-        secure: true,
+        secure: false,
+        sameSite: 'none',
         maxAge: 60 * 1000
     }
 }));
