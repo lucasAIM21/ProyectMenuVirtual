@@ -9,6 +9,7 @@ const ValidarPINRoutes = require("./routes/ValidarPIN")
 const cors = require("cors");
 
 const app = express();
+app.set("trust proxy",1);
 
 app.use(cors({
     origin: 'https://lucasaim21.github.io',
