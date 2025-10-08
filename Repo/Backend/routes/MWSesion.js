@@ -4,6 +4,6 @@ function ValidarSesion(req,res,next){
     }else{
         res.status(401).json({error:"Sesion no valida o expirada"});
     }
-}
+};
 
-MediaSourceHandle.exports=ValidarSesion;
+module.exports=ValidarSesion;
