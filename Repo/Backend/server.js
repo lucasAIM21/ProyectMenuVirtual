@@ -51,7 +51,7 @@ app.get("/api/test", (req, res) => {
 // Rutas de productos
 app.use("/api/productos", productosRoutes);
 app.use("/api/categorias", categoriasRoutes);
-app.use("/api", ValidarPINRoutes);
+app.use("/api/ValidarPIN", ValidarPINRoutes);
 
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {

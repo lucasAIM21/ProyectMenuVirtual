@@ -3,7 +3,7 @@ const router = express.Router();
 
 const PINC=process.env.APP_PIN;
 
-router.post("/ValidarPIN", (req, res) => {
+router.post("/", (req, res) => {
     const {pin} = req.body;
     if(!pin){
         return res.status(400).json({success:false,messaje:"Falta el PIN"});
