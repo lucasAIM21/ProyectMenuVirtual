@@ -16,7 +16,7 @@ router.post("/", (req, res) => {
     }
 });
 
-router.get("/ValidarSesion",(req,res)=>{0
+router.get("/",(req,res)=>{0
     if(req.session.autenticado){
         res.json({autenticado:true});
     }else{
