@@ -4,6 +4,8 @@ const multer = require("multer");
 const path = require("path");
 const db = require("../config/db");
 
+const ValidarPIN = require("./MWSesion");
+
 // 📂 Configuración de multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -71,7 +73,7 @@ router.get("/", async (req, res) => {
 });
 
 // ==================== POST PRODUCTO ====================
-router.post("/", upload.single("imagen"), async (req, res) => {
+router.post("/",ValidarPIN, upload.single("imagen"), async (req, res) => {
     const { nombre, precio, descripcion, CategoriaId } = req.body;
 
     if (!nombre || !precio) {
@@ -102,7 +104,7 @@ router.post("/", upload.single("imagen"), async (req, res) => {
 });
 
 // ==================== PUT PRODUCTO ====================
-router.put("/:id", upload.single("imagen"), async (req, res) => {
+router.put("/:id",ValidarPIN, upload.single("imagen"), async (req, res) => {
     const { nombre, precio, descripcion } = req.body;
     const { id } = req.params;
 
@@ -144,7 +146,7 @@ router.put("/:id", upload.single("imagen"), async (req, res) => {
 });
 
 // ==================== DELETE PRODUCTO ====================
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",ValidarPIN, async (req, res) => {
     const { id } = req.params;
 
     try {
