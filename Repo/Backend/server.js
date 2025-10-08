@@ -13,21 +13,23 @@ app.set("trust proxy",1);
 
 app.use(cors({
     origin: 'https://lucasaim21.github.io',
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://lucasaim21.github.io");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Origin", "https://lucasaim21.github.io");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  // Si es preflight, respondemos inmediatamente
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
-  }
+    // Si es preflight, respondemos inmediatamente
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(204);
+    }
 
-  next();
+    next();
 });
 
 app.use(sesion({
