@@ -38,6 +38,7 @@ router.get("/", async (req, res) => {
             p.nombre,
             p.Precio as precio,
             p.Ingredientes as descripcion,
+            p.cantidad,
             i.RutaImagen as imagen,
             c.CategoriaId AS categoriaId,
             c.nombre AS categoriaNombre,
@@ -56,6 +57,7 @@ router.get("/", async (req, res) => {
             nombre: p.nombre,
             precio: p.precio,
             descripcion: p.descripcion,
+            cantidad: p.cantidad,
             imagen: p.imagen,
             categoria: p.categoriaId ? {
                 id: p.categoriaId,
@@ -74,7 +76,7 @@ router.get("/", async (req, res) => {
 
 // ==================== POST PRODUCTO ====================
 router.post("/",ValidarPIN, upload.single("imagen"), async (req, res) => {
-    const { nombre, precio, descripcion, CategoriaId } = req.body;
+    const { nombre, precio, descripcion,cantidad, CategoriaId } = req.body;
 
     if (!nombre || !precio) {
         return res.status(400).json({ error: "Faltan datos obligatorios" });
@@ -83,8 +85,8 @@ router.post("/",ValidarPIN, upload.single("imagen"), async (req, res) => {
     try {
         // Insertar producto
         const [result] = await db.query(
-            "INSERT INTO Productos (nombre, Precio, Ingredientes, CategoriaId) VALUES (?, ?, ?, ?)",
-            [nombre, precio, descripcion, CategoriaId]
+            "INSERT INTO Productos (nombre, Precio, Ingredientes,cantidad, CategoriaId) VALUES (?, ?, ?, ?, ?)",
+            [nombre, precio, descripcion,cantidad, CategoriaId]
         );
 
         // Si hay imagen, guardarla en ImgProductos
@@ -105,14 +107,14 @@ router.post("/",ValidarPIN, upload.single("imagen"), async (req, res) => {
 
 // ==================== PUT PRODUCTO ====================
 router.put("/:id",ValidarPIN, upload.single("imagen"), async (req, res) => {
-    const { nombre, precio, descripcion } = req.body;
+    const { nombre, precio, descripcion,cantidad } = req.body;
     const { id } = req.params;
 
     try {
         // Actualizar producto
         await db.query(
-            "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ? WHERE ProductoId = ?",
-            [nombre, precio, descripcion, id]
+            "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ?, cantidad = ? WHERE ProductoId = ?",
+            [nombre, precio, descripcion, cantidad, id]
         );
 
         // Si hay nueva imagen, actualizar o insertar
