@@ -68,7 +68,7 @@ router.get("/", async (req, res) => {
 
         productos.forEach(p => {
             if(p.cantidad===null){
-                console.log("No se esta capturando la cantidad");
+                p.cantidad=0;
             }else{
                 console.log("cantidad: ",p.cantidad);
             }
