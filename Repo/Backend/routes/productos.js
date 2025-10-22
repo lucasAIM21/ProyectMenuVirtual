@@ -66,11 +66,11 @@ router.get("/", async (req, res) => {
             } : null
         }));
 
-        productos.forEach(p => {
-            if(p.cantidad===null){
-                p.cantidad=0;
+        productos.forEach(pr => {
+            if(pr.cantidad===null){
+                pr.cantidad=0;
             }else{
-                console.log("cantidad: ",p.cantidad);
+                console.log("cantidad: ",pr.cantidad);
             }
         });
 
