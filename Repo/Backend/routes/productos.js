@@ -66,6 +66,14 @@ router.get("/", async (req, res) => {
             } : null
         }));
 
+        productos.forEach(p => {
+            if(p.cantidad===null){
+                console.log("No se esta capturando la cantidad");
+            }else{
+                console.log("cantidad: ",p.cantidad);
+            }
+        });
+
         console.log("✅ Consulta exitosa. Enviando", productos.length, "productos");
         res.json(productos);
     } catch (err) {
