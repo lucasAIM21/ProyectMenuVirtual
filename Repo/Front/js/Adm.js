@@ -115,7 +115,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 // Editar producto (rellenar formulario)
-window.editarProducto = (id, nombre, precio, descripcion, image, CategoriaId) => {
+window.editarProducto = (id, nombre, precio, descripcion, cantidad, CategoriaId) => {
     const producto = productos.find(p => p.id === id);
     if(!productos) return;
 
