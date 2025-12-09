@@ -13,11 +13,11 @@ const sesionRoutes = require("./routes/SessionRoutes");
 
 // Dependencias
 const db = require("./config/db");
-const productoRepository = require("./src/infrastructure/repositories/producto.repository");
-const productoService = require("./src/domain/services/producto.service");
-const productoControllerFactory = require("./src/application/controllers/producto.controller");
-const sesionServiceFactory = require("./src/domain/services/sesion.service");
-const sesionControllerFactory = require("./src/application/controllers/sesion.controller");
+const productoRepository = require("./src/infrastructure/repositories/ProductosRepository");
+const productoService = require("./src/domain/services/ProductosService");
+const productoControllerFactory = require("./src/application/controllers/ProductosController");
+const sesionServiceFactory = require("./src/domain/services/SesionService");
+const sesionControllerFactory = require("./src/application/controllers/SesionController");
 
 // Logger
 const logger = {
@@ -67,8 +67,10 @@ app.use(session({
 
 // Middlewares
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    credentials: true
+    origin: 'https://lucasaim21.github.io',
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
