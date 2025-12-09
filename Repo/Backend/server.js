@@ -9,7 +9,7 @@ require("dotenv").config();
 
 // Rutas
 const productosRoutes = require("./routes/ProductosRoutes");
-const sesionRoutes = require("./routes/SessionRoutes");
+const sesionRoutes = require("./routes/SesionRoutes");
 
 // Dependencias
 const db = require("./config/db");
