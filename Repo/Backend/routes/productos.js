@@ -1,165 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const db = require("../config/db");
+
+// Configuraciones
+const upload = require("../config/multer.config"); 
+ 
+  
 
 const ValidarPIN = require("./MWSesion");
 
+// Repositorios y servicios
+const productoRepository = require("../src/infrastructure/repositories/producto.repository");
+const productoService = require("../src/domain/services/producto.service");
+const productoControllerFactory = require("../src/application/controllers/producto.controller");
 
-const upload = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        const allowed = /jpeg|jpg|png|webp/;
-        const ext = path.extname(file.originalname).toLowerCase();
-        if (allowed.test(ext)) {
-            cb(null, true);
-        } else {
-            cb(new Error("Solo se permiten imágenes (jpeg, jpg, png, webp)"));
-        }
-    }
-});
+// Logger simple
+const logger = {
+    info: (message, data) => console.log(`[INFO] ${message}`, data || ''),
+    error: (message, error) => console.error(`[ERROR] ${message}`, error || '')
+};
 
-// ==================== GET PRODUCTOS ====================
-router.get("/", async (req, res) => {
-    console.log("📍 Petición GET /api/productos recibida");
+// Inicializar dependencias
+const servicio = productoService(productoRepository);
+const controlador = productoControllerFactory(servicio, logger);
 
-    const query = `
-        SELECT 
-            p.ProductoId as id,
-            p.nombre,
-            p.Precio as precio,
-            p.Ingredientes as descripcion,
-            p.cantidad,
-            i.RutaImagen as imagen,
-            c.CategoriaId AS categoriaId,
-            c.nombre AS categoriaNombre,
-            ic.RutaImagen AS categoriaImagen
-        FROM Productos p
-        LEFT JOIN Categoria c ON p.CategoriaId = c.CategoriaId
-        LEFT JOIN ImgProductos i ON p.ProductoId = i.ProductoId
-        LEFT JOIN ImgCategorias ic ON c.ImgId = ic.ImgId
-    `;
+// ==================== RUTAS ====================
 
-    try {
-        const [results] = await db.query(query);
+// 📋 Obtener todos los productos
+router.get("/", controlador.obtenerProductos);
 
-        const productos = results.map(p => ({
-            id: p.id,
-            nombre: p.nombre,
-            precio: p.precio,
-            descripcion: p.descripcion,
-            cantidad: p.cantidad,
-            imagen: p.imagen,
-            categoria: p.categoriaId ? {
-                id: p.categoriaId,
-                nombre: p.categoriaNombre,
-                icono: p.categoriaImagen
-            } : null
-        }));
+// ➕ Crear nuevo producto (con autenticación y subida de imagen)
+router.post("/", ValidarPIN, upload.single("imagen"), controlador.crearProducto);
 
-        console.log("✅ Consulta exitosa. Enviando", productos.length, "productos");
-        res.json(productos);
-    } catch (err) {
-        console.error("❌ Error en la consulta:", err);
-        res.status(500).json({ error: "Error en la consulta" });
-    }
-});
+// ✏️ Actualizar producto (con autenticación y posible nueva imagen)
+router.put("/:id", ValidarPIN, upload.single("imagen"), controlador.actualizarProducto);
 
-// ==================== POST PRODUCTO ====================
-router.post("/",ValidarPIN, upload.single("imagen"), async (req, res) => {
-    const { nombre, precio, descripcion,cantidad, CategoriaId } = req.body;
-
-    if (!nombre || !precio) {
-        return res.status(400).json({ error: "Faltan datos obligatorios" });
-    }
-
-    try {
-        // Insertar producto
-        const [result] = await db.query(
-            "INSERT INTO Productos (nombre, Precio, Ingredientes,cantidad, CategoriaId) VALUES (?, ?, ?, ?, ?)",
-            [nombre, precio, descripcion,cantidad, CategoriaId]
-        );
-
-        // Si hay imagen, guardarla en ImgProductos
-        if (req.file) {
-            const rutaImagen = "/imgs/imgP/" + req.file.filename;
-            await db.query(
-                "INSERT INTO ImgProductos (ProductoId, RutaImagen) VALUES (?, ?)",
-                [result.insertId, rutaImagen]
-            );
-        }
-
-        res.status(201).json({ message: "Producto creado", id: result.insertId });
-    } catch (err) {
-        console.error("❌ Error al crear producto:", err);
-        res.status(500).json({ error: "Error en base de datos", details: err.message });
-    }
-});
-
-// ==================== PUT PRODUCTO ====================
-router.put("/:id",ValidarPIN, upload.single("imagen"), async (req, res) => {
-    const { nombre, precio, descripcion,cantidad } = req.body;
-    const { id } = req.params;
-
-    try {
-        // Actualizar producto
-        await db.query(
-            "UPDATE Productos SET nombre = ?, Precio = ?, Ingredientes = ?, cantidad = ? WHERE ProductoId = ?",
-            [nombre, precio, descripcion, cantidad, id]
-        );
-
-        // Si hay nueva imagen, actualizar o insertar
-        if (req.file) {
-            const rutaImagen = "/imgs/imgP/" + req.file.filename;
-
-            // Checar si ya existe imagen para este producto
-            const [rows] = await db.query(
-                "SELECT ImgId FROM ImgProductos WHERE ProductoId = ?",
-                [id]
-            );
-
-            if (rows.length > 0) {
-                await db.query(
-                    "UPDATE ImgProductos SET RutaImagen = ? WHERE ProductoId = ?",
-                    [rutaImagen, id]
-                );
-            } else {
-                await db.query(
-                    "INSERT INTO ImgProductos (ProductoId, RutaImagen) VALUES (?, ?)",
-                    [id, rutaImagen]
-                );
-            }
-        }
-
-        res.json({ message: "Producto modificado" });
-    } catch (err) {
-        console.error("❌ Error al modificar producto:", err);
-        res.status(500).json({ error: "Error en base de datos", details: err.message });
-    }
-});
-
-// ==================== DELETE PRODUCTO ====================
-router.delete("/:id",ValidarPIN, async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        // Eliminar primero la imagen asociada (si existe)
-        await db.query("DELETE FROM ImgProductos WHERE ProductoId = ?", [id]);
-
-        // Luego eliminar el producto
-        const [result] = await db.query("DELETE FROM Productos WHERE ProductoId = ?", [id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: "Producto no encontrado" });
-        }
-
-        res.json({ message: "Producto eliminado correctamente" });
-    } catch (err) {
-        console.error("❌ Error al eliminar producto:", err);
-        res.status(500).json({ error: "Error en base de datos", details: err.message });
-    }
-});
-
+// 🗑️ Eliminar producto (con autenticación)
+router.delete("/:id", ValidarPIN, controlador.eliminarProducto);
 
 module.exports = router;
