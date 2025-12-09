@@ -1,0 +1,11 @@
+const createSesionService = () => ({
+    validarPIN: (pinIngresado, pinCorrecto) => {
+        return pinIngresado === pinCorrecto;
+    },
+
+    verificarAutenticacion: (session) => {
+        return session && session.autenticado;
+    }
+});
+
+module.exports = createSesionService;

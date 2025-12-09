@@ -2,21 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 // Configuraciones
-const upload = require("../config/multer.config"); 
- 
-  
-
-const ValidarPIN = require("./MWSesion");
+const upload = require("../config/multer");
+const authMiddleware = require("../src/api/middlewares/AuthAMW"); // Cambiado
 
 // Repositorios y servicios
-const productoRepository = require("../src/infrastructure/repositories/producto.repository");
-const productoService = require("../src/domain/services/producto.service");
-const productoControllerFactory = require("../src/application/controllers/producto.controller");
+const productoRepository = require("../src/infrastructure/repositories/ProductosRepository");
+const productoService = require("../src/domain/services/ProductosService");
+const productoControllerFactory = require("../src/application/controllers/ProductosController");
 
 // Logger simple
 const logger = {
     info: (message, data) => console.log(`[INFO] ${message}`, data || ''),
-    error: (message, error) => console.error(`[ERROR] ${message}`, error || '')
+    error: (message, error) => console.error(`[ERROR] ${message}`, error || ''),
+    warn: (message, data) => console.warn(`[WARN] ${message}`, data || '')
 };
 
 // Inicializar dependencias
@@ -25,16 +23,16 @@ const controlador = productoControllerFactory(servicio, logger);
 
 // ==================== RUTAS ====================
 
-// 📋 Obtener todos los productos
+// 📋 Obtener todos los productos (público)
 router.get("/", controlador.obtenerProductos);
 
-// ➕ Crear nuevo producto (con autenticación y subida de imagen)
-router.post("/", ValidarPIN, upload.single("imagen"), controlador.crearProducto);
+// ➕ Crear nuevo producto (protegido)
+router.post("/", authMiddleware, upload.single("imagen"), controlador.crearProducto);
 
-// ✏️ Actualizar producto (con autenticación y posible nueva imagen)
-router.put("/:id", ValidarPIN, upload.single("imagen"), controlador.actualizarProducto);
+// ✏️ Actualizar producto (protegido)
+router.put("/:id", authMiddleware, upload.single("imagen"), controlador.actualizarProducto);
 
-// 🗑️ Eliminar producto (con autenticación)
-router.delete("/:id", ValidarPIN, controlador.eliminarProducto);
+// 🗑️ Eliminar producto (protegido)
+router.delete("/:id", authMiddleware, controlador.eliminarProducto);
 
 module.exports = router;
