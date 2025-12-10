@@ -3,7 +3,7 @@
 
     // Configuraciones
     const upload = require("../config/multer");
-    const authMiddleware = require("../src/api/middlewares/AuthMW"); // Cambiado
+    const authMiddleware = require("../src/api/MiddleWares/AuthMW"); // Cambiado
 
     // Repositorios y servicios
     const productoRepository = require("../src/infrastructure/repositories/ProductosRepository");
