@@ -143,5 +143,4 @@ app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
     console.log(`📁 Entorno: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔐 APP_PIN configurado: ${process.env.APP_PIN ? 'Sí' : 'No (usando default)'}`);
-    console.log(`📊 Session store: ${sessionStore ? 'MySQL' : 'Memoria'}`);
 });
