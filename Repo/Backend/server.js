@@ -2,7 +2,6 @@ const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 const path = require("path");
-const MySQLStore = require("express-mysql-session")(session); // Opcional pero recomendado
 
 // Configuración
 require("dotenv").config();
@@ -38,22 +37,10 @@ const productoController = productoControllerFactory(
 const app = express();
 
 // Configuración de sesión con MySQL Store (recomendado para producción)
-const sessionStore = new MySQLStore({
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'DB_Menu',
-    clearExpired: true,
-    checkExpirationInterval: 900000, // 15 minutos
-    expiration: 86400000, // 1 día (24 horas)
-    createDatabaseTable: true
-});
 
 app.use(session({
     key: 'session_cookie',
     secret: process.env.SESSION_SECRET || 'secreto_super_seguro_cambiar_en_produccion',
-    store: sessionStore, // Usar MySQL para persistencia
     resave: false,
     saveUninitialized: false,
     rolling: true, // Renovar cookie en cada request
