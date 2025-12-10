@@ -47,7 +47,7 @@ app.use(session({
     cookie: { 
         secure: process.env.NODE_ENV === 'production', // HTTPS en producción
         httpOnly: true, // No accesible desde JavaScript
-        maxAge: 3600000, // 1 hora
+        maxAge: 3600*1000, // 1 hora
         sameSite: 'strict'
     }
 }));
@@ -133,7 +133,7 @@ app.use((err, req, res, next) => {
 });
 
 // Ruta 404
-app.use("*", (req, res) => {
+app.use("/*", (req, res) => {
     res.status(404).json({ error: "Ruta no encontrada" });
 });
 
