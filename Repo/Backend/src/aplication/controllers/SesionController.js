@@ -1,8 +1,3 @@
-/**
- * Controlador de sesión
- * Maneja la lógica de autenticación HTTP
- */
-
 const createSesionController = (sesionService, logger) => ({
     /**
      * Validar PIN de administración
@@ -76,6 +71,45 @@ const createSesionController = (sesionService, logger) => ({
             res.status(500).json({
                 autenticado: false,
                 error: "Error verificando sesión"
+            });
+        }
+    },
+
+    /**
+     * Cerrar sesión
+     */
+    cerrarSesion: (req, res) => {
+        try {
+            if (req.session) {
+                req.session.destroy((err) => {
+                    if (err) {
+                        logger.error("Error cerrando sesión:", err);
+                        return res.status(500).json({
+                            success: false,
+                            message: "Error al cerrar sesión"
+                        });
+                    }
+                    
+                    // Limpiar cookie
+                    res.clearCookie('session_cookie'); // Usar el mismo nombre que en server.js
+                    logger.info("Sesión cerrada exitosamente");
+                    res.json({
+                        success: true,
+                        message: "Sesión cerrada exitosamente"
+                    });
+                });
+            } else {
+                logger.debug("No hay sesión activa para cerrar");
+                res.json({
+                    success: true,
+                    message: "No hay sesión activa"
+                });
+            }
+        } catch (error) {
+            logger.error("Error en cerrarSesion:", error);
+            res.status(500).json({
+                success: false,
+                message: "Error interno del servidor"
             });
         }
     }

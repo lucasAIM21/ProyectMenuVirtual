@@ -65,8 +65,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware para inyectar controladores
 app.use((req, res, next) => {
-    // Inyectar controlador de sesión
+    // Inyectar controladores
     req.sessionController = sesionController;
+    req.productoController = productoController; // Si también lo necesitas
     next();
 });
 
