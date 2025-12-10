@@ -14,9 +14,9 @@ const sesionRoutes = require("./routes/SesionRoutes");
 const db = require("./config/db");
 const productoRepository = require("./src/infrastructure/repositories/ProductosRepository");
 const productoService = require("./src/domain/services/ProductosService");
-const productoControllerFactory = require("./src/application/controllers/ProductosController");
+const productoControllerFactory = require("./src/aplication/controllers/ProductosController");
 const sesionServiceFactory = require("./src/domain/services/SesionService");
-const sesionControllerFactory = require("./src/application/controllers/SesionController");
+const sesionControllerFactory = require("./src/aplication/controllers/SesionController");
 
 // Logger
 const logger = {
