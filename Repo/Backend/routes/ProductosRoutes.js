@@ -8,7 +8,7 @@
     // Repositorios y servicios
     const productoRepository = require("../src/infrastructure/repositories/ProductosRepository");
     const productoService = require("../src/domain/services/ProductosService");
-    const productoControllerFactory = require("../src/application/controllers/ProductosController");
+    const productoControllerFactory = require("../src/aplication/controllers/ProductosController");
 
     // Logger simple
     const logger = {
