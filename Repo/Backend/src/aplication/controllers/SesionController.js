@@ -23,11 +23,23 @@ const createSesionController = (sesionService, logger) => ({
                 req.session.userId = 'admin';
                 req.session.timestamp = new Date();
                 
-                logger.info("PIN válido, sesión creada");
-                return res.json({
-                    success: true,
-                    message: "PIN Correcto",
-                    sessionId: req.sessionID
+                return req.session.save(err => {
+                    if (err) {
+                        logger.error("Error guardando sesión:", err);
+                            return res.status(500).json({
+                            success: false,
+                            message: "Error guardando sesión"
+                        });
+                    }
+
+                    logger.info("PIN válido, sesión creada y guardada");
+
+                    // 3️⃣ Recién ahora respondes
+                    return res.json({
+                        success: true,
+                        message: "PIN Correcto",
+                        sessionId: req.sessionID
+                    });
                 });
             } else {
                 logger.warn("PIN incorrecto rechazado");
