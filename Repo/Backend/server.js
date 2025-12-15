@@ -9,14 +9,21 @@ require("dotenv").config();
 // Rutas
 const productosRoutes = require("./routes/ProductosRoutes");
 const sesionRoutes = require("./routes/SesionRoutes");
+const categoriasRoutes = require("./routes/CategoriasRoutes");
 
 // Dependencias
 const db = require("./config/db");
+
 const productoRepository = require("./src/infrastructure/repositories/ProductosRepository");
 const productoService = require("./src/domain/services/ProductosService");
 const productoControllerFactory = require("./src/aplication/controllers/ProductosController");
+
 const sesionServiceFactory = require("./src/domain/services/SesionService");
 const sesionControllerFactory = require("./src/aplication/controllers/SesionController");
+
+const categoriaRepository = require("./src/infrastructure/repositories/CategoriasRepository");
+const categoriaService = require("./src/domain/services/CategoriasService");
+const categoriaControllerFactory = require("./src/aplication/controllers/CategoriasController");
 
 // Logger
 const logger = {
@@ -29,10 +36,17 @@ const logger = {
 // Inicializar servicios y controladores
 const sesionService = sesionServiceFactory(logger);
 const sesionController = sesionControllerFactory(sesionService, logger);
+
 const productoController = productoControllerFactory(
     productoService(productoRepository),
     logger
 );
+
+const categoriaController = categoriaControllerFactory(
+    categoriaService(categoriaRepository),
+    logger
+);
+
 
 const app = express();
 
@@ -70,6 +84,7 @@ app.use((req, res, next) => {
     // Inyectar controladores
     req.sessionController = sesionController;
     req.productoController = productoController; // Si también lo necesitas
+    req.categoriaController = categoriaController;
     next();
 });
 
@@ -92,6 +107,8 @@ app.use("/api/sesion", sesionRoutes);
 
 // Ruta de productos (protegida por middleware en las rutas específicas)
 app.use("/api/productos", productosRoutes);
+
+app.use("/api/categorias", categoriasRoutes)
 
 // Ruta de prueba de sesión
 app.get("/api/test-session", (req, res) => {
