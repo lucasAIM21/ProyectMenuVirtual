@@ -108,7 +108,7 @@ app.use("/api/sesion", sesionRoutes);
 // Ruta de productos (protegida por middleware en las rutas específicas)
 app.use("/api/productos", productosRoutes);
 
-app.use("/api/categorias", categoriasRoutes)
+app.use("/api/Categorias", categoriasRoutes)
 
 // Ruta de prueba de sesión
 app.get("/api/test-session", (req, res) => {
