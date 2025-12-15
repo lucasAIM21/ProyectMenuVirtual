@@ -54,7 +54,7 @@ app.use(session({
     saveUninitialized: false,
     rolling: true, // Renovar cookie en cada request
     cookie: { 
-        secure: process.env.NODE_ENV === 'production', // HTTPS en producción
+        secure: true,
         httpOnly: true, // No accesible desde JavaScript
         maxAge: 3600*1000, // 1 hora
         sameSite: 'none'
