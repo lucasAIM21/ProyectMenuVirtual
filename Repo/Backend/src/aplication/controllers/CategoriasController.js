@@ -4,7 +4,7 @@ const categoriaController= (productoService, logger) =>({
             logger.info("📍 Petición GET /api/Categorias recibida");
 
             const categorias = await productoService.obtenerCategorias();
-            logger.info(`✅ Consulta exitosa. Enviando ${productos.length} productos`);
+            logger.info(`✅ Consulta exitosa. Enviando ${categorias.length} categorias`);
             res.json(categorias);
         } catch (error) {
             logger.error("❌ Error en la consulta:", error);
