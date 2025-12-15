@@ -39,7 +39,7 @@ const app = express();
 // Configuración de sesión con MySQL Store (recomendado para producción)
 
 app.use(session({
-    key: 'session_cookie',
+    name: 'session_cookie',
     secret: process.env.SESSION_SECRET || 'secreto_super_seguro_cambiar_en_produccion',
     resave: false,
     saveUninitialized: false,
@@ -48,7 +48,7 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production', // HTTPS en producción
         httpOnly: true, // No accesible desde JavaScript
         maxAge: 3600*1000, // 1 hora
-        sameSite: 'strict'
+        sameSite: 'none'
     }
 }));
 
