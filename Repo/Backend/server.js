@@ -36,8 +36,17 @@ const productoController = productoControllerFactory(
 
 const app = express();
 
-// Configuración de sesión con MySQL Store (recomendado para producción)
+app.set('trust proxy', 1);
 
+// Middlewares
+app.use(cors({
+    origin: 'https://lucasaim21.github.io',
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Configuración de sesión con MySQL Store (recomendado para producción)
 app.use(session({
     name: 'session_cookie',
     secret: process.env.SESSION_SECRET || 'secreto_super_seguro_cambiar_en_produccion',
@@ -52,13 +61,6 @@ app.use(session({
     }
 }));
 
-// Middlewares
-app.use(cors({
-    origin: 'https://lucasaim21.github.io',
-    credentials: true,
-    methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
