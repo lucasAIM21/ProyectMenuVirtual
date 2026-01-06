@@ -1,6 +1,3 @@
--- Crear la base de datos
-CREATE DATABASE DB_Menu;
-USE DB_Menu;
 
 DROP TABLE IF EXISTS `Categoria`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
